@@ -1,4 +1,5 @@
-import { DateProvider, Message, MessageRepository, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
+import { text } from "stream/consumers";
+import { DateProvider, Message, MessageEmptyError, MessageRepository, MessageTooLongError, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
 
 describe('Feature: Posting a message', () => {
   describe('Rule: A message can contain a maximum of 280 characters', () => {
@@ -15,16 +16,39 @@ describe('Feature: Posting a message', () => {
       })
 
     })
-  })
+
+    test("Alice cannot post a message of 281 characters", () => {
+      const textWithLengthOf281 = 'a'.repeat(281);
+      givenNowIs(new Date('2023-06-08T12:51:00Z'))
+
+      whenUserPostsAMessage({ id: 'message-id', text: textWithLengthOf281, author: 'Alice' });
+
+      thenErrorShouldBe(MessageTooLongError);
+    })
+  });
+
+  describe('Rule: A message cannot be empty', () => {
+
+    test("Alice cannot post an empty message", () => {
+      const emptyText = '';
+      givenNowIs(new Date('2023-06-08T12:51:00Z'))
+
+      whenUserPostsAMessage({ id: 'message-id', text: emptyText, author: 'Alice' });
+
+      thenErrorShouldBe(MessageEmptyError);
+    })
+
+  });
 })
 
 
 
 
-let message: Message;
+let message: Message | null;
+let thrownError: Error;
 
 class InMemoryMessageRepository implements MessageRepository {
-  save(msg: Message): void {
+  save(msg: Message | null): void {
     message = msg;
   }
 }
@@ -48,11 +72,20 @@ function givenNowIs(_now: Date) {
 }
 
 function whenUserPostsAMessage(postMessageCommand: PostMessageCommand) {
-  postMessageUseCase.handle(postMessageCommand)
+  try {
+    postMessageUseCase.handle(postMessageCommand)
+  } catch (error) {
+    thrownError = error;
+  }
 
 }
 
-function thenPostedMessageShouldBe(expected: Message) {
+function thenPostedMessageShouldBe(expected: Message | null) {
   expect(expected).toEqual(message)
+}
+
+
+function thenErrorShouldBe(expectedErrorClass: new () => Error) {
+  expect(thrownError).toBeInstanceOf(expectedErrorClass);
 }
 
