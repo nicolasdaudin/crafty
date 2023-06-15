@@ -31,6 +31,10 @@ export class PostMessageUseCase {
     if (postMessageCommand.text.length > 280) {
       throw new MessageTooLongError();
     }
+    if (postMessageCommand.text.trim().length === 0) {
+      throw new MessageEmptyError();
+    }
+
     this.messageRepository.save({
       id: postMessageCommand.id,
       text: postMessageCommand.text,
