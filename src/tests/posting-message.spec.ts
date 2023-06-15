@@ -8,10 +8,10 @@ describe('Feature: Posting a message', () => {
     fixture = createFixture();
   })
   describe('Rule: A message can contain a maximum of 280 characters', () => {
-    test("Alice can post a message on her timeline", () => {
+    test("Alice can post a message on her timeline", async () => {
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'));
 
-      fixture.whenUserPostsAMessage({
+      await fixture.whenUserPostsAMessage({
         id: 'message-id', text: 'Hello World', author: 'Alice'
       });
 
@@ -22,11 +22,11 @@ describe('Feature: Posting a message', () => {
 
     })
 
-    test("Alice can post a message of 280 characters", () => {
+    test("Alice can post a message of 280 characters", async () => {
       const textWithLengthOf280 = 'a'.repeat(280);
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      fixture.whenUserPostsAMessage({ id: 'message-id', text: textWithLengthOf280, author: 'Alice' });
+      await fixture.whenUserPostsAMessage({ id: 'message-id', text: textWithLengthOf280, author: 'Alice' });
 
       fixture.thenPostedMessageShouldBe({
         id: 'message-id', text: textWithLengthOf280, author: 'Alice',
@@ -34,11 +34,11 @@ describe('Feature: Posting a message', () => {
       })
     })
 
-    test("Alice cannot post a message of 281 characters", () => {
+    test("Alice cannot post a message of 281 characters", async () => {
       const textWithLengthOf281 = 'a'.repeat(281);
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      fixture.whenUserPostsAMessage({ id: 'message-id', text: textWithLengthOf281, author: 'Alice' });
+      await fixture.whenUserPostsAMessage({ id: 'message-id', text: textWithLengthOf281, author: 'Alice' });
 
       fixture.thenErrorShouldBe(MessageTooLongError);
     })
@@ -46,20 +46,20 @@ describe('Feature: Posting a message', () => {
 
   describe('Rule: A message cannot be empty', () => {
 
-    test("Alice cannot post an empty message", () => {
+    test("Alice cannot post an empty message", async () => {
 
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      fixture.whenUserPostsAMessage({ id: 'message-id', text: '', author: 'Alice' });
+      await fixture.whenUserPostsAMessage({ id: 'message-id', text: '', author: 'Alice' });
 
       fixture.thenErrorShouldBe(MessageEmptyError);
     })
 
-    test("Alice cannot post a message with only whitespaces", () => {
+    test("Alice cannot post a message with only whitespaces", async () => {
       const emptyText = '';
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      fixture.whenUserPostsAMessage({ id: 'message-id', text: '    ', author: 'Alice' });
+      await fixture.whenUserPostsAMessage({ id: 'message-id', text: '    ', author: 'Alice' });
 
       fixture.thenErrorShouldBe(MessageEmptyError);
     })
@@ -95,9 +95,9 @@ const createFixture = () => {
     givenNowIs(_now: Date) {
       dateProvider.now = _now;
     },
-    whenUserPostsAMessage(postMessageCommand: PostMessageCommand) {
+    async whenUserPostsAMessage(postMessageCommand: PostMessageCommand) {
       try {
-        postMessageUseCase.handle(postMessageCommand)
+        await postMessageUseCase.handle(postMessageCommand)
       } catch (error) {
         thrownError = error;
       }
