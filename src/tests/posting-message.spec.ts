@@ -1,5 +1,6 @@
 import { text } from "stream/consumers";
-import { DateProvider, Message, MessageEmptyError, MessageRepository, MessageTooLongError, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
+import { DateProvider, Message, MessageEmptyError, MessageTooLongError, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
+import { InMemoryMessageRepository } from "../message.inmemory.repository";
 
 describe('Feature: Posting a message', () => {
   let fixture: Fixture;
@@ -70,12 +71,6 @@ describe('Feature: Posting a message', () => {
 
 
 
-class InMemoryMessageRepository implements MessageRepository {
-  message: Message;
-  save(msg: Message): void {
-    this.message = msg;
-  }
-}
 class StubDateProvider implements DateProvider {
   now: Date
   getNow(): Date {
