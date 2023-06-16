@@ -11,6 +11,8 @@ export type Message = {
 }
 
 export interface MessageRepository {
+  getAllOfUser(user: string): Promise<Message[]>;
+  // read(): Promise<Message[]>;
   save(msg: Message): Promise<void>;
 }
 

@@ -1,6 +1,6 @@
-import { text } from "stream/consumers";
-import { DateProvider, Message, MessageEmptyError, MessageTooLongError, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
+import { Message, MessageEmptyError, MessageTooLongError, PostMessageCommand, PostMessageUseCase } from "../post-message.usecase";
 import { InMemoryMessageRepository } from "../message.inmemory.repository";
+import { StubDateProvider } from "../stub-data-provider";
 
 describe('Feature: Posting a message', () => {
   let fixture: Fixture;
@@ -71,15 +71,6 @@ describe('Feature: Posting a message', () => {
 
 
 
-class StubDateProvider implements DateProvider {
-  now: Date
-  getNow(): Date {
-    return this.now;
-  }
-}
-
-
-
 const createFixture = () => {
   const messageRepository = new InMemoryMessageRepository();
   const dateProvider = new StubDateProvider();
@@ -103,7 +94,7 @@ const createFixture = () => {
       }
     },
     thenPostedMessageShouldBe(expected: Message) {
-      expect(expected).toEqual(messageRepository.message)
+      expect(expected).toEqual(messageRepository.getMessageById(expected.id))
     },
     thenErrorShouldBe(expectedErrorClass: new () => Error) {
       expect(thrownError).toBeInstanceOf(expectedErrorClass);
