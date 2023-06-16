@@ -4,6 +4,7 @@ import { Argument, program } from "commander";
 import { DateProvider, PostMessageCommand, PostMessageUseCase } from "./src/post-message.usecase";
 import { InMemoryMessageRepository } from "./src/message.inmemory.repository";
 import { FileMessageRepository } from "./src/message.file.repository";
+import { ViewTimelineUseCase } from "./src/view-timeline.usecase";
 
 class RealDateProvider implements DateProvider {
   getNow(): Date {
@@ -15,7 +16,7 @@ const dateProvider = new RealDateProvider();
 // const messageRepository = new InMemoryMessageRepository();
 const messageRepository = new FileMessageRepository();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
-
+const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
 
 const crafty = program.version('1.0.0').description('Crafty social network by Nico');
 crafty.command('post')
@@ -23,7 +24,7 @@ crafty.command('post')
   .addArgument(new Argument('<message>', 'message to be posted'))
   .action(async (user: string, message: string) => {
     const postMessageCommand: PostMessageCommand = {
-      id: 'test-id-CLI',
+      id: `${Math.floor(Math.random() * 10000)}`,
       author: user,
       text: message
     };
@@ -38,20 +39,20 @@ crafty.command('post')
     }
   });
 
-// crafty.command('view').addArgument(new Argument('<user>', 'name of the user for which we want to see the timeline')).action(async (user: string) => {
-//   const viewTimelineQuery: ViewTimelineQuery = { author: user };
-//   try {
-//     await viewTimeLineUseCase.handle(viewTimelineQuery);
+crafty.command('view').addArgument(new Argument('<user>', 'name of the user for which we want to see the timeline')).action(async (user: string) => {
+
+  try {
+    const timeline = await viewTimelineUseCase.handle({ user });
 
 
-//     console.log('✅ Timeline dispo');
-//     console.table(timelineRenderer.timeline);
-//   } catch (error) {
-//     console.log('❌ Timeline non dispo. Erreur:', error);
+    console.log('✅ Timeline dispo');
+    console.table(timeline);
+  } catch (error) {
+    console.log('❌ Timeline non dispo. Erreur:', error);
 
-//   }
+  }
 
-// })
+})
 
 async function main() {
   crafty.parseAsync();
