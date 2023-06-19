@@ -1,4 +1,5 @@
-import { Message, MessageRepository } from "./post-message.usecase";
+import { MessageRepository } from "./message.repository";
+import { Message } from "./post-message.usecase";
 
 export class InMemoryMessageRepository implements MessageRepository {
 
@@ -12,8 +13,13 @@ export class InMemoryMessageRepository implements MessageRepository {
     this.messages.set(msg.id, msg);
   }
 
+  async getById(id: string): Promise<Message> {
+    return this.getMessageById(id);
+  }
+
+
   getMessageById(messageId: string) {
-    return this.messages.get(messageId);
+    return this.messages.get(messageId)!;
   }
 
   getAllOfUser(user: string): Promise<Message[]> {

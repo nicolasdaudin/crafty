@@ -1,3 +1,5 @@
+import { MessageRepository } from "./message.repository";
+
 export type PostMessageCommand = {
   id: string;
   text: string;
@@ -10,11 +12,7 @@ export type Message = {
   publishedAt: Date
 }
 
-export interface MessageRepository {
-  getAllOfUser(user: string): Promise<Message[]>;
-  // read(): Promise<Message[]>;
-  save(msg: Message): Promise<void>;
-}
+
 
 export interface DateProvider {
   getNow(): Date;

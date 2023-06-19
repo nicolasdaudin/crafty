@@ -2,9 +2,9 @@
 
 import { Argument, program } from "commander";
 import { DateProvider, PostMessageCommand, PostMessageUseCase } from "./src/post-message.usecase";
-import { InMemoryMessageRepository } from "./src/message.inmemory.repository";
 import { FileMessageRepository } from "./src/message.file.repository";
 import { ViewTimelineUseCase } from "./src/view-timeline.usecase";
+import { EditMessageCommand, EditMessageUseCase } from "./src/edit-message.usecase";
 
 class RealDateProvider implements DateProvider {
   getNow(): Date {
@@ -17,6 +17,7 @@ const dateProvider = new RealDateProvider();
 const messageRepository = new FileMessageRepository();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+const editMessageUseCase = new EditMessageUseCase(messageRepository);
 
 const crafty = program.version('1.0.0').description('Crafty social network by Nico');
 crafty.command('post')
@@ -51,8 +52,26 @@ crafty.command('view').addArgument(new Argument('<user>', 'name of the user for 
     console.log('❌ Timeline non dispo. Erreur:', error);
 
   }
-
 })
+
+crafty.command('edit')
+  .addArgument(new Argument('<message-id>', 'id of the message to be edited'))
+  .addArgument(new Argument('<message>', 'new message text'))
+  .action(async (messageId: string, message: string) => {
+    const editMessageCommand: EditMessageCommand = {
+      id: messageId,
+      text: message
+    };
+
+    try {
+      await editMessageUseCase.handle(editMessageCommand);
+
+      console.log('✅ Message edité');
+    } catch (error) {
+      console.log('❌ Message non edité. Erreur:', error);
+
+    }
+  })
 
 async function main() {
   crafty.parseAsync();
