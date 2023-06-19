@@ -1,6 +1,7 @@
 import { EditMessageCommand, EditMessageUseCase } from "../../edit-message.usecase";
+import { Message } from "../../message";
 import { InMemoryMessageRepository } from "../../message.inmemory.repository";
-import { Message, PostMessageCommand, PostMessageUseCase } from "../../post-message.usecase";
+import { PostMessageCommand, PostMessageUseCase } from "../../post-message.usecase";
 import { StubDateProvider } from "../../stub-data-provider";
 import { ViewTimelineUseCase } from "../../view-timeline.usecase";
 

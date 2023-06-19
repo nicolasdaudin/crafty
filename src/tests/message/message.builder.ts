@@ -1,4 +1,4 @@
-import { Message } from "../../post-message.usecase"
+import { Message, MessageText } from "../../message"
 
 export const messageBuilder = ({ id = 'message-id', author = 'someone', text = 'text', publishedAt = new Date() }: { id?: string, author?: string, text?: string, publishedAt?: Date } = {}) => {
   const props = { id, author, text, publishedAt }
@@ -27,12 +27,12 @@ export const messageBuilder = ({ id = 'message-id', author = 'someone', text = '
         publishedAt: _publishedAt
       })
     },
-    build() {
+    build(): Message {
       // whitelisting
       return {
         id: props.id,
         author: props.author,
-        text: props.text,
+        text: MessageText.of(props.text),
         publishedAt: props.publishedAt
       };
     }

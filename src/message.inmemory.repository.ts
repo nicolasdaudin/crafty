@@ -1,5 +1,5 @@
+import { Message } from "./message";
 import { MessageRepository } from "./message.repository";
-import { Message } from "./post-message.usecase";
 
 export class InMemoryMessageRepository implements MessageRepository {
 

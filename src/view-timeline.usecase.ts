@@ -8,12 +8,12 @@ export class ViewTimelineUseCase {
     private readonly messageRepository: MessageRepository,
     private readonly dateProvider: DateProvider) { }
   async handle({ user }: { user: string }): Promise<{ author: string, text: string, publicationTime: string }[]> {
-    const messagesOfUser = await (await this.messageRepository.getAllOfUser(user))
+    const messagesOfUser = await this.messageRepository.getAllOfUser(user)
     messagesOfUser.sort((msgA, msgB) => msgB.publishedAt.getTime() - msgA.publishedAt.getTime())
 
     const now = this.dateProvider.getNow();
 
-    return messagesOfUser.slice(0, MAX_MESSAGES_IN_TIMELINE).map(({ author, text, publishedAt }) => ({ author, text, publicationTime: this.publicationTime(now, publishedAt) }));
+    return messagesOfUser.slice(0, MAX_MESSAGES_IN_TIMELINE).map(({ author, text, publishedAt }) => ({ author, text: text.value, publicationTime: this.publicationTime(now, publishedAt) }));
 
 
   }

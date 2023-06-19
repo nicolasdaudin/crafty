@@ -1,7 +1,7 @@
-import { Message } from "./post-message.usecase";
 import * as fs from 'fs';
 import * as path from 'path';
 import { MessageRepository } from "./message.repository";
+import { Message } from './message';
 export class FileMessageRepository implements MessageRepository {
 
   private readonly filePath = path.join(__dirname, 'crafty.json');

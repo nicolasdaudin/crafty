@@ -1,4 +1,4 @@
-import { Message } from "./post-message.usecase";
+import { Message } from "./message";
 
 export interface MessageRepository {
   getById(id: string): Promise<Message>;

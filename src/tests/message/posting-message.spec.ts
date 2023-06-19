@@ -1,4 +1,4 @@
-import { MessageEmptyError, MessageTooLongError } from "../../post-message.usecase";
+import { MessageEmptyError, MessageTooLongError } from "../../message";
 import { messageBuilder } from "./message.builder";
 import { MessagingFixture, createMessagingFixture } from "./message.fixture";
 
@@ -14,9 +14,10 @@ describe('Feature: Posting a message', () => {
 
 
       await fixture.whenUserPostsAMessage(
-        aliceMessageBuilder
-          .withText('Hello World')
-          .build()
+        {
+          id: 'message-id',
+          text: 'Hello World', author: 'Alice'
+        }
       );
 
       fixture.thenPostedMessageShouldBe(
@@ -34,7 +35,11 @@ describe('Feature: Posting a message', () => {
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
       await fixture.whenUserPostsAMessage(
-        aliceMessageBuilder.withText(textWithLengthOf280).build())
+        {
+          id: 'message-id',
+          text: textWithLengthOf280, author: 'Alice'
+        }
+      )
 
       fixture.thenPostedMessageShouldBe(aliceMessageBuilder.withText(textWithLengthOf280).publishedAt(new Date('2023-06-08T12:51:00Z')).build());
 
@@ -45,8 +50,12 @@ describe('Feature: Posting a message', () => {
       const textWithLengthOf281 = 'a'.repeat(281);
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      await fixture.whenUserPostsAMessage(aliceMessageBuilder.withText(textWithLengthOf281).build());
-
+      await fixture.whenUserPostsAMessage(
+        {
+          id: 'message-id',
+          text: textWithLengthOf281, author: 'Alice'
+        }
+      )
       fixture.thenErrorShouldBe(MessageTooLongError);
     })
   })
@@ -58,8 +67,12 @@ describe('Feature: Posting a message', () => {
 
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      await fixture.whenUserPostsAMessage(aliceMessageBuilder.withText('').build())
-
+      await fixture.whenUserPostsAMessage(
+        {
+          id: 'message-id',
+          text: '', author: 'Alice'
+        }
+      )
       fixture.thenErrorShouldBe(MessageEmptyError);
     })
 
@@ -67,8 +80,12 @@ describe('Feature: Posting a message', () => {
       const emptyText = '';
       fixture.givenNowIs(new Date('2023-06-08T12:51:00Z'))
 
-      await fixture.whenUserPostsAMessage(aliceMessageBuilder.withText('      ').build());
-
+      await fixture.whenUserPostsAMessage(
+        {
+          id: 'message-id',
+          text: '   ', author: 'Alice'
+        }
+      )
       fixture.thenErrorShouldBe(MessageEmptyError);
     })
 
