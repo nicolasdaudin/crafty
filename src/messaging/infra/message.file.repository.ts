@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MessageRepository } from "./message.repository";
-import { Message, MessageText } from './message';
+import { MessageRepository } from "../application/message.repository";
+import { Message } from '../domain/message';
 export class FileMessageRepository implements MessageRepository {
 
   constructor(private readonly filePath = path.join(__dirname, 'crafty.json')) { }

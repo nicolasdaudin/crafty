@@ -38,12 +38,13 @@ export class Message {
     }
   }
 
-  static fromData({ id, author, text, publishedAt }: { id: string, author: string, text: string, publishedAt: Date }): Message {
+  // static fromData({ id, author, text, publishedAt }: { id: string, author: string, text: string, publishedAt: Date }): Message {
+  static fromData(data: Message["data"]): Message {
     return new Message(
-      id,
-      author,
-      MessageText.of(text),
-      publishedAt
+      data.id,
+      data.author,
+      MessageText.of(data.text),
+      data.publishedAt
     );
   }
 
