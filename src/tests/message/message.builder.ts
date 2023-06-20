@@ -29,12 +29,12 @@ export const messageBuilder = ({ id = 'message-id', author = 'someone', text = '
     },
     build(): Message {
       // whitelisting
-      return {
+      return Message.fromData({
         id: props.id,
         author: props.author,
-        text: MessageText.of(props.text),
+        text: props.text,
         publishedAt: props.publishedAt
-      };
+      });
     }
   }
 }

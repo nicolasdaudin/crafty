@@ -41,12 +41,15 @@ export class FileMessageRepository implements MessageRepository {
     const data = await fs.promises.readFile(this.filePath, 'utf-8')
     const messages = JSON.parse(data.toString()) as { id: string, author: string, text: string, publishedAt: string }[];
 
-    return messages.map((message) => ({
-      id: message.id,
-      author: message.author,
-      text: MessageText.of(message.text),
-      publishedAt: new Date(message.publishedAt)
-    }))
+    return messages.map((message) => {
+      return Message.fromData(
+        {
+          id: message.id,
+          author: message.author,
+          text: message.text,
+          publishedAt: new Date(message.publishedAt)
+        })
+    })
 
   }
 }
