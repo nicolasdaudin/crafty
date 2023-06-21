@@ -1,10 +1,9 @@
-import { EditMessageCommand, EditMessageUseCase } from "../../application/usecases/edit-message.usecase";
-import { PostMessageCommand, PostMessageUseCase } from "../../application/usecases/post-message.usecase";
-import { ViewTimelineUseCase } from "../../application/usecases/view-timeline.usecase";
-import { Message } from "../../domain/message";
-import { InMemoryMessageRepository } from "../../infra/message.inmemory.repository";
-import { StubDateProvider } from "../../infra/stub-data-provider";
-
+import { EditMessageUseCase, EditMessageCommand } from "../application/usecases/edit-message.usecase";
+import { PostMessageUseCase, PostMessageCommand } from "../application/usecases/post-message.usecase";
+import { ViewTimelineUseCase } from "../application/usecases/view-timeline.usecase";
+import { Message } from "../domain/message";
+import { InMemoryMessageRepository } from "../infra/message.inmemory.repository";
+import { StubDateProvider } from "../infra/stub-data-provider";
 
 export const createMessagingFixture = () => {
   let timeline: { author: string, text: string, publicationTime: string }[];
@@ -29,7 +28,7 @@ export const createMessagingFixture = () => {
       timeline = await viewTimelineUseCase.handle({ user });
     },
     thenUserShouldSee(expectedTimeline: { author: string, text: string, publicationTime: string }[]) {
-      console.log(timeline);
+
       expect(timeline).toEqual(expectedTimeline);
     },
     async whenUserPostsAMessage(postMessageCommand: PostMessageCommand) {

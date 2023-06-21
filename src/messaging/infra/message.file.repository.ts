@@ -4,7 +4,7 @@ import { MessageRepository } from "../application/message.repository";
 import { Message } from '../domain/message';
 export class FileMessageRepository implements MessageRepository {
 
-  constructor(private readonly filePath = path.join(__dirname, 'crafty.json')) { }
+  constructor(private readonly filePath = path.join(__dirname, 'messages.json')) { }
 
   async save(_msg: Message): Promise<void> {
 
@@ -38,7 +38,7 @@ export class FileMessageRepository implements MessageRepository {
   }
 
   private async getMessages(): Promise<Message[]> {
-    const data = await fs.promises.readFile(this.filePath, 'utf-8')
+    const data = await fs.promises.readFile(this.filePath)
     const messages = JSON.parse(data.toString()) as { id: string, author: string, text: string, publishedAt: string }[];
 
     return messages.map((message) => {

@@ -6,6 +6,9 @@ import { EditMessageCommand, EditMessageUseCase } from "./src/messaging/applicat
 import { RealDateProvider } from "./src/messaging/infra/real-date-provider";
 import { PostMessageCommand, PostMessageUseCase } from "./src/messaging/application/usecases/post-message.usecase";
 import { ViewTimelineUseCase } from "./src/messaging/application/usecases/view-timeline.usecase";
+import { FollowUserCommand, FollowUserUseCase } from "./src/followee/follow-user.usecase";
+import { InMemoryFolloweeRepository } from "./src/followee/followee.inmemory.repository";
+import { FileUserRepository } from "./src/followee/user.file.repository";
 
 
 
@@ -67,6 +70,29 @@ crafty.command('edit')
     } catch (error) {
       console.log('❌ Message non edité. Erreur:', error);
 
+    }
+  })
+
+
+crafty.command('follow')
+  .addArgument(new Argument('user', 'user name'))
+  .addArgument(new Argument('user-to-follow', 'user to follow'))
+  .action(async (user: string, userToFollow: string) => {
+    const userRepository = new FileUserRepository();
+
+    const followUserUseCase = new FollowUserUseCase(userRepository);
+    const followUserCommand: FollowUserCommand = {
+      user: user,
+      userToFollow
+    }
+
+    try {
+      await followUserUseCase.handle(followUserCommand);
+      const myUser = await userRepository.getFolloweesOf(user);
+      console.log(myUser)
+      console.log('✅ User abonné');
+    } catch (error) {
+      console.log('❌ User non abonné. Erreur:', error);
     }
   })
 

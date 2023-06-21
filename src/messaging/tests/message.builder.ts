@@ -1,4 +1,4 @@
-import { Message, MessageText } from "../../domain/message"
+import { Message } from "../domain/message"
 
 export const messageBuilder = ({ id = 'message-id', author = 'someone', text = 'text', publishedAt = new Date() }: { id?: string, author?: string, text?: string, publishedAt?: Date } = {}) => {
   const props = { id, author, text, publishedAt }

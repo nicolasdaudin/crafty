@@ -1,7 +1,7 @@
 import * as path from "path";
-import { FileMessageRepository } from "../../infra/message.file.repository";
-import { messageBuilder } from "./message.builder";
 import * as fs from 'fs';
+import { FileMessageRepository } from "../infra/message.file.repository";
+import { messageBuilder } from "./message.builder";
 
 describe("FileMessageRepository", () => {
 
