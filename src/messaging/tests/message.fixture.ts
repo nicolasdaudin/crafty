@@ -18,6 +18,9 @@ export const createMessagingFixture = () => {
   let thrownError: Error;
 
   return {
+    getDateProvider() {
+      return dateProvider;
+    },
     givenFollowingMessagesExist(_msgs: Message[]) {
       messageRepository.givenExistingMessages(_msgs);
     },
@@ -51,7 +54,8 @@ export const createMessagingFixture = () => {
     },
     thenErrorShouldBe(expectedErrorClass: new () => Error) {
       expect(thrownError).toBeInstanceOf(expectedErrorClass);
-    }
+    },
+    messageRepository,
   }
 }
 

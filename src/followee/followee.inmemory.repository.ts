@@ -3,23 +3,29 @@ import { FolloweeRepository } from "./followee.repository";
 
 export class InMemoryFolloweeRepository implements FolloweeRepository {
   followeesByUser = new Map<string, string[]>();
+  id: number;
 
-  givenExistingFollowees(_followees: Followee[]) {
-    _followees.forEach(fellowee => this.addFollowee(fellowee));
+  constructor() {
+    this.id = Math.floor(Math.random() * 1000000)
   }
 
-  async getFolloweesOf(name: string) {
-    return this.followeesByUser.get(name) ?? [];
+  async givenExistingFollowees(_followees: Followee[]) {
+    // await Promise.all(_followees.map(followee => this.addFollowee(followee)))
+    for (const followee of _followees) {
+      await this.addFollowee(followee);
+    }
+  }
+
+  async getFolloweesOf(name: string): Promise<string[] | []> {
+    return Promise.resolve(this.followeesByUser.get(name) ?? [])
   }
 
   async saveFollowee(followee: Followee): Promise<void> {
-    this.addFollowee(followee);
-
-    return Promise.resolve();
+    await this.addFollowee(followee);
   }
 
-  private addFollowee(followee: Followee) {
-    const existingFollowees = this.followeesByUser.get(followee.user) ?? [];
+  private async addFollowee(followee: Followee) {
+    const existingFollowees = await this.getFolloweesOf(followee.user) as string[];
     existingFollowees.push(followee.followee);
     this.followeesByUser.set(followee.user, existingFollowees);
   }
