@@ -1,5 +1,5 @@
 import { FollowUserCommand, FollowUserUseCase } from "../follow-user.usecase";
-import { InMemoryFolloweeRepository } from "../followee.inmemory.repository";
+import { InMemoryFolloweeRepository } from "../infra/followee.inmemory.repository";
 
 export const createFollowingFixture = () => {
   const followeeRepository = new InMemoryFolloweeRepository();

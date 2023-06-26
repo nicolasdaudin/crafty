@@ -7,7 +7,7 @@ import { StubDateProvider } from "../../messaging/infra/stub-data-provider";
 import { MessageRepository } from "../../messaging/application/message.repository";
 import { DateProvider } from "../../messaging/application/date-provider";
 import { FolloweeRepository } from "../../followee/followee.repository";
-import { InMemoryFolloweeRepository } from "../../followee/followee.inmemory.repository";
+import { InMemoryFolloweeRepository } from "../../followee/infra/followee.inmemory.repository";
 
 describe("Feature: A user can view a wall with an aggregated timeline of his messages and his subscription's messages, in reverse chronological order", () => {
 

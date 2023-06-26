@@ -7,7 +7,7 @@ describe('Feature : Follow a user', () => {
   })
 
   describe('Rule: a user can follow another user', () => {
-    test('Alice can follow Bob', async () => {
+    test('Alice already follows Charlie and now wants to follow Bob', async () => {
       await fixture.givenUserFollowees({
         user: 'Alice',
         followees: ['Charlie']
@@ -23,13 +23,31 @@ describe('Feature : Follow a user', () => {
         followees: ['Charlie', 'Bob']
       })
     })
-  });
 
-  describe('Rule: a user with no followeee can follow another user', () => {
-    test('Alice can follow Bob', async () => {
+
+    test('Alice has no followees and now wants to follow Bob', async () => {
       await fixture.givenUserFollowees({
         user: 'Alice',
         followees: []
+      })
+
+      await fixture.whenUserFollows({
+        user: 'Alice',
+        userToFollow: 'Bob'
+      })
+
+      await fixture.thenUserFolloweesAre({
+        user: 'Alice',
+        followees: ['Bob']
+      })
+    })
+  });
+
+  describe('Rule: a user can not follow twice the same user', () => {
+    test('Alice already follows Bob. Nothing changes when she requests following Bob again', async () => {
+      await fixture.givenUserFollowees({
+        user: 'Alice',
+        followees: ['Bob']
       })
 
       await fixture.whenUserFollows({

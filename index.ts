@@ -7,18 +7,20 @@ import { RealDateProvider } from "./src/messaging/infra/real-date-provider";
 import { PostMessageCommand, PostMessageUseCase } from "./src/messaging/application/usecases/post-message.usecase";
 import { ViewTimelineUseCase } from "./src/messaging/application/usecases/view-timeline.usecase";
 import { FollowUserCommand, FollowUserUseCase } from "./src/followee/follow-user.usecase";
-import { InMemoryFolloweeRepository } from "./src/followee/followee.inmemory.repository";
-import { FileUserRepository } from "./src/followee/user.file.repository";
+import { FileSystemFolloweeRepository } from "./src/followee/infra/followee.file.repository";
+import { ViewWallUseCase } from "./src/wall/view-wall.usecase";
 
 
 
 const dateProvider = new RealDateProvider();
 // const messageRepository = new InMemoryMessageRepository();
 const messageRepository = new FileMessageRepository();
+const followeeRepository = new FileSystemFolloweeRepository();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
-
+const followUserUseCase = new FollowUserUseCase(followeeRepository);
+const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository, dateProvider);
 const crafty = program.version('1.0.0').description('Crafty social network by Nico');
 crafty.command('post')
   .addArgument(new Argument('<user>', 'name of the user'))
@@ -78,9 +80,6 @@ crafty.command('follow')
   .addArgument(new Argument('user', 'user name'))
   .addArgument(new Argument('user-to-follow', 'user to follow'))
   .action(async (user: string, userToFollow: string) => {
-    const userRepository = new FileUserRepository();
-
-    const followUserUseCase = new FollowUserUseCase(userRepository);
     const followUserCommand: FollowUserCommand = {
       user: user,
       userToFollow
@@ -88,11 +87,23 @@ crafty.command('follow')
 
     try {
       await followUserUseCase.handle(followUserCommand);
-      const myUser = await userRepository.getFolloweesOf(user);
+      const myUser = await followeeRepository.getFolloweesOf(user);
       console.log(myUser)
       console.log('✅ User abonné');
     } catch (error) {
       console.log('❌ User non abonné. Erreur:', error);
+    }
+  })
+
+crafty.command('wall')
+  .addArgument(new Argument('user', `user's wall we want to see`))
+  .action(async (user: string) => {
+    try {
+      const timeline = await viewWallUseCase.handle({ user });
+      console.table(timeline)
+      console.log('✅ Le wall a pu être visualisé');
+    } catch (error) {
+      console.log('❌ Le Wall ne peut pas être visualisé. Erreur:', error);
     }
   })
 

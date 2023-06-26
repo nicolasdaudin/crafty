@@ -1,5 +1,5 @@
-import { Followee } from "./followee";
-import { FolloweeRepository } from "./followee.repository";
+import { Followee } from "../followee";
+import { FolloweeRepository } from "../followee.repository";
 
 export class InMemoryFolloweeRepository implements FolloweeRepository {
   followeesByUser = new Map<string, string[]>();
@@ -26,6 +26,8 @@ export class InMemoryFolloweeRepository implements FolloweeRepository {
 
   private async addFollowee(followee: Followee) {
     const existingFollowees = await this.getFolloweesOf(followee.user) as string[];
+    if (existingFollowees.includes(followee.followee)) return;
+
     existingFollowees.push(followee.followee);
     this.followeesByUser.set(followee.user, existingFollowees);
   }
