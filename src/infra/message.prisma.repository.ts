@@ -1,0 +1,60 @@
+import { PrismaClient } from "@prisma/client";
+import { MessageRepository } from "../messaging/application/message.repository";
+import { Message } from "../messaging/domain/message";
+
+export class PrismaMessageRepository implements MessageRepository {
+  constructor(private readonly prisma: PrismaClient) { }
+  async save(msg: Message): Promise<void> {
+    const messageData = msg.data;
+
+    // create User if non existent
+    await this.prisma.user.upsert({
+      where: { name: messageData.author },
+      create: { name: messageData.author },
+      update: { name: messageData.author }
+    })
+
+    // Create message
+    await this.prisma.message.upsert({
+      where: { id: messageData.id },
+      create: {
+        id: messageData.id,
+        authorId: messageData.author,
+        text: messageData.text,
+        publishedAt: messageData.publishedAt
+      },
+      update: {
+        id: messageData.id,
+        authorId: messageData.author,
+        text: messageData.text,
+        publishedAt: messageData.publishedAt
+      },
+    })
+
+  }
+
+  async getById(id: string): Promise<Message> {
+    const messageData = await this.prisma.message.findFirstOrThrow({ where: { id } });
+
+    return Message.fromData({
+      id: messageData.id,
+      author: messageData.authorId,
+      text: messageData.text,
+      publishedAt: messageData.publishedAt
+    })
+
+
+  }
+
+  async getAllOfUser(user: string): Promise<Message[]> {
+    const messagesData = await this.prisma.message.findMany({ where: { authorId: user } });
+
+    return messagesData.map(m => Message.fromData({
+      id: m.id,
+      author: m.authorId,
+      text: m.text,
+      publishedAt: m.publishedAt
+    }))
+  };
+
+}
