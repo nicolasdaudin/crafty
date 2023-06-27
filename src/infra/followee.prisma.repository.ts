@@ -7,6 +7,7 @@ export class PrismaFolloweeRepository implements FolloweeRepository {
 
   async saveFollowee(followee: Followee): Promise<void> {
     // First create user if non existent
+    // This is because we haven't checked for that case in the usecase or in the specs but to prevent problems on DB we should account for this and just automagically create these
     await this.upsertUser(followee.user);
     await this.upsertUser(followee.followee);
 

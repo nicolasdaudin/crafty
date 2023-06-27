@@ -2,6 +2,10 @@ import { PrismaClient } from "@prisma/client";
 import { MessageRepository } from "../messaging/application/message.repository";
 import { Message } from "../messaging/domain/message";
 
+
+// in case of complex usecases, we could have a 'Message' (and User?) object representing the items en database, and some helper to do the mapping between Database objects and app objects, but here it's not complex
+// This mapping would be here, part of the repository 
+// but here we do it directly (id: message.id, ...)
 export class PrismaMessageRepository implements MessageRepository {
   constructor(private readonly prisma: PrismaClient) { }
   async save(msg: Message): Promise<void> {
