@@ -1,26 +1,29 @@
 #!/usr/bin/env node
 
 import { Argument, program } from "commander";
-import { FileMessageRepository } from "./src/messaging/infra/message.file.repository";
-import { EditMessageCommand, EditMessageUseCase } from "./src/messaging/application/usecases/edit-message.usecase";
-import { RealDateProvider } from "./src/messaging/infra/real-date-provider";
-import { PostMessageCommand, PostMessageUseCase } from "./src/messaging/application/usecases/post-message.usecase";
-import { ViewTimelineUseCase } from "./src/messaging/application/usecases/view-timeline.usecase";
-import { FollowUserCommand, FollowUserUseCase } from "./src/followee/follow-user.usecase";
-import { FileSystemFolloweeRepository } from "./src/followee/infra/followee.file.repository";
-import { ViewWallUseCase } from "./src/wall/view-wall.usecase";
+import { EditMessageCommand, EditMessageUseCase } from "../messaging/application/usecases/edit-message.usecase";
+import { RealDateProvider } from "../messaging/infra/real-date-provider";
+import { PostMessageCommand, PostMessageUseCase } from "../messaging/application/usecases/post-message.usecase";
+import { ViewTimelineUseCase } from "../messaging/application/usecases/view-timeline.usecase";
+import { FollowUserCommand, FollowUserUseCase } from "../followee/follow-user.usecase";
+import { ViewWallUseCase } from "../wall/view-wall.usecase";
+import { PrismaClient } from "@prisma/client";
+import { PrismaMessageRepository } from "../infra/message.prisma.repository";
+import { PrismaFolloweeRepository } from "../infra/followee.prisma.repository";
 
 
 
 const dateProvider = new RealDateProvider();
-// const messageRepository = new InMemoryMessageRepository();
-const messageRepository = new FileMessageRepository();
-const followeeRepository = new FileSystemFolloweeRepository();
+
+const prismaClient = new PrismaClient();
+const messageRepository = new PrismaMessageRepository(prismaClient);
+const followeeRepository = new PrismaFolloweeRepository(prismaClient);
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const followUserUseCase = new FollowUserUseCase(followeeRepository);
 const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository, dateProvider);
+
 const crafty = program.version('1.0.0').description('Crafty social network by Nico');
 crafty.command('post')
   .addArgument(new Argument('<user>', 'name of the user'))
@@ -108,7 +111,7 @@ crafty.command('wall')
   })
 
 async function main() {
-  crafty.parseAsync();
+  await crafty.parseAsync();
 }
 main();
 
