@@ -11,6 +11,7 @@ import { PrismaMessageRepository } from "../infra/message.prisma.repository";
 import { PrismaFolloweeRepository } from "../infra/followee.prisma.repository";
 import Fastify, { FastifyInstance } from "fastify";
 import * as httpErrors from 'http-errors';
+import { ApiTimelinePresenter } from "./timeline.api.presenter";
 
 
 
@@ -20,10 +21,10 @@ const prismaClient = new PrismaClient();
 const messageRepository = new PrismaMessageRepository(prismaClient);
 const followeeRepository = new PrismaFolloweeRepository(prismaClient);
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
-const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const followUserUseCase = new FollowUserUseCase(followeeRepository);
-const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository, dateProvider);
+const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository);
 
 const fastify = Fastify({ logger: true });
 
@@ -88,9 +89,8 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     Body: { user: string, userToFollow: string }
   }>('/view', {}, async (request, reply) => {
     try {
-      const timeline = await viewTimelineUseCase.handle({ user: request.query.user });
-
-      reply.status(200).send(timeline)
+      const apiTimelinePresenter = new ApiTimelinePresenter(reply);
+      await viewTimelineUseCase.handle({ user: request.query.user }, apiTimelinePresenter);
 
     } catch (err) {
       reply.send(httpErrors[500](err));
@@ -105,9 +105,9 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     Body: { user: string, userToFollow: string }
   }>('/wall', {}, async (request, reply) => {
     try {
-      const wall = await viewWallUseCase.handle({ user: request.query.user });
+      const apiTimelinePresenter = new ApiTimelinePresenter(reply);
+      await viewWallUseCase.handle({ user: request.query.user }, apiTimelinePresenter);
 
-      reply.status(200).send(wall)
 
     } catch (err) {
       reply.send(httpErrors[500](err));

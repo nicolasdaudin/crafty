@@ -10,6 +10,8 @@ import { ViewWallUseCase } from "../wall/view-wall.usecase";
 import { PrismaClient } from "@prisma/client";
 import { PrismaMessageRepository } from "../infra/message.prisma.repository";
 import { PrismaFolloweeRepository } from "../infra/followee.prisma.repository";
+import { DefaultTimelinePresenter } from "./timeline.default.presenter";
+import { CLITimelinePresenter } from "./timeline.cli.presenter";
 
 
 
@@ -19,10 +21,12 @@ const prismaClient = new PrismaClient();
 const messageRepository = new PrismaMessageRepository(prismaClient);
 const followeeRepository = new PrismaFolloweeRepository(prismaClient);
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
-const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+const defaultTimelinePresenter = new DefaultTimelinePresenter(dateProvider);
+const cliTimelinePresenter = new CLITimelinePresenter(defaultTimelinePresenter);
+const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const followUserUseCase = new FollowUserUseCase(followeeRepository);
-const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository, dateProvider);
+const viewWallUseCase = new ViewWallUseCase(messageRepository, followeeRepository);
 
 const crafty = program.version('1.0.0').description('Crafty social network by Nico');
 crafty.command('post')
@@ -48,11 +52,10 @@ crafty.command('post')
 crafty.command('view').addArgument(new Argument('<user>', 'name of the user for which we want to see the timeline')).action(async (user: string) => {
 
   try {
-    const timeline = await viewTimelineUseCase.handle({ user });
+    await viewTimelineUseCase.handle({ user }, cliTimelinePresenter);
 
 
     console.log('✅ Timeline dispo');
-    console.table(timeline);
   } catch (error) {
     console.log('❌ Timeline non dispo. Erreur:', error);
 
@@ -102,8 +105,7 @@ crafty.command('wall')
   .addArgument(new Argument('user', `user's wall we want to see`))
   .action(async (user: string) => {
     try {
-      const timeline = await viewWallUseCase.handle({ user });
-      console.table(timeline)
+      await viewWallUseCase.handle({ user }, cliTimelinePresenter);
       console.log('✅ Le wall a pu être visualisé');
     } catch (error) {
       console.log('❌ Le Wall ne peut pas être visualisé. Erreur:', error);
