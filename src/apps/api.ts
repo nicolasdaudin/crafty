@@ -37,12 +37,18 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     };
 
     try {
-      await postMessageUseCase.handle(postMessageCommand);
-      console.log('✅ Message posté');
-      reply.status(201)
+      // await postMessageUseCase.handle(postMessageCommand);
+      // console.log('✅ Message posté');
+      // reply.status(201)
 
+      const result = await postMessageUseCase.handle(postMessageCommand);
+      if (result.isOk()) {
+        reply.status(201);
+        return;
+      }
+      reply.send(httpErrors[403](result.error.message))
     } catch (err) {
-      console.log('❌ Message non posté. Erreur:', err);
+      // console.log('❌ Message non posté. Erreur:', err);
       reply.send(httpErrors[500](err));
     }
   });
@@ -54,9 +60,12 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     };
 
     try {
-      await editMessageUseCase.handle(editMessageCommand);
-      console.log('✅ Message edité');
-      reply.status(201)
+      const result = await editMessageUseCase.handle(editMessageCommand);
+      if (result.isOk()) {
+        reply.status(200);
+        return;
+      }
+      reply.send(httpErrors[403](result.error.message));
 
     } catch (err) {
       console.log('❌ Message non edité. Erreur:', err);

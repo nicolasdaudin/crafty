@@ -40,11 +40,16 @@ crafty.command('post')
     };
 
     try {
-      await postMessageUseCase.handle(postMessageCommand);
-
-      console.log('✅ Message posté');
+      const result = await postMessageUseCase.handle(postMessageCommand);
+      if (result.isOk()) {
+        console.log('✅ Message posté');
+        process.exit(0);
+      }
+      console.error('❌ Message non posté. Erreur:', result.error);
+      process.exit(1);
     } catch (error) {
       console.log('❌ Message non posté. Erreur:', error);
+      process.exit(1);
 
     }
   });
@@ -72,9 +77,13 @@ crafty.command('edit')
     };
 
     try {
-      await editMessageUseCase.handle(editMessageCommand);
+      const result = await editMessageUseCase.handle(editMessageCommand);
 
-      console.log('✅ Message edité');
+      if (result.isOk()) {
+        console.log('✅ Message edité');
+        process.exit(0);
+      }
+      console.log('❌ Message non edité. Erreur:', result.error);
     } catch (error) {
       console.log('❌ Message non edité. Erreur:', error);
 
