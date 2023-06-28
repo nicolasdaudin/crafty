@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as fs from 'fs';
-import { Followee } from "../../followee";
 import { FileSystemFolloweeRepository } from "../followee.file.repository";
+import { Followee } from "../../application/followee.repository";
 
 describe("FileSystemFolloweeRepository", () => {
   const testFilePath = path.join(__dirname, 'followee-test.json');

@@ -2,9 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { exec } from "child_process";
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from "testcontainers";
 import { promisify } from "util";
-import { PrismaFolloweeRepository } from "./followee.prisma.repository";
-import { Followee } from "../followee/followee";
-import { NotFoundError } from "@prisma/client/runtime";
+import { PrismaFolloweeRepository } from "../prisma/followee.prisma.repository";
+import { Followee } from "../../application/followee.repository";
 
 const asyncExec = promisify(exec);
 

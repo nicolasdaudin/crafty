@@ -1,14 +1,13 @@
-import { MessagingFixture, createMessagingFixture } from "../../messaging/tests/message.fixture";
-import { messageBuilder } from "../../messaging/tests/message.builder";
-import { FollowingFixture, createFollowingFixture } from "../../followee/tests/followee.fixture";
-import { ViewWallUseCase } from "../view-wall.usecase";
-import { InMemoryMessageRepository } from "../../messaging/infra/message.inmemory.repository";
-import { StubDateProvider } from "../../messaging/infra/stub-data-provider";
-import { MessageRepository } from "../../messaging/application/message.repository";
-import { DateProvider } from "../../messaging/application/date-provider";
-import { FolloweeRepository } from "../../followee/followee.repository";
-import { InMemoryFolloweeRepository } from "../../followee/infra/followee.inmemory.repository";
-import { DefaultTimelinePresenter } from "../../apps/timeline.default.presenter";
+import { MessagingFixture, createMessagingFixture } from "./message.fixture";
+import { messageBuilder } from "./message.builder";
+import { FollowingFixture, createFollowingFixture } from "./followee.fixture";
+import { ViewWallUseCase } from "../application/usecases/view-wall.usecase";
+import { MessageRepository } from "../application/message.repository";
+import { FolloweeRepository } from "../application/followee.repository";
+import { InMemoryFolloweeRepository } from "../infra/followee.inmemory.repository";
+import { DefaultTimelinePresenter } from "../apps/timeline.default.presenter";
+import { InMemoryMessageRepository } from "../infra/message.inmemory.repository";
+import { StubDateProvider } from "../infra/stub-data-provider";
 
 describe("Feature: A user can view a wall with an aggregated timeline of his messages and his subscription's messages, in reverse chronological order", () => {
 

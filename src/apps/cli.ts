@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 import { Argument, program } from "commander";
-import { EditMessageCommand, EditMessageUseCase } from "../messaging/application/usecases/edit-message.usecase";
-import { RealDateProvider } from "../messaging/infra/real-date-provider";
-import { PostMessageCommand, PostMessageUseCase } from "../messaging/application/usecases/post-message.usecase";
-import { ViewTimelineUseCase } from "../messaging/application/usecases/view-timeline.usecase";
-import { FollowUserCommand, FollowUserUseCase } from "../followee/follow-user.usecase";
-import { ViewWallUseCase } from "../wall/view-wall.usecase";
+import { EditMessageCommand, EditMessageUseCase } from "../application/usecases/edit-message.usecase";
+import { PostMessageCommand, PostMessageUseCase } from "../application/usecases/post-message.usecase";
+import { ViewTimelineUseCase } from "../application/usecases/view-timeline.usecase";
+import { FollowUserCommand, FollowUserUseCase } from "../application/usecases/follow-user.usecase";
+import { ViewWallUseCase } from "../application/usecases/view-wall.usecase";
 import { PrismaClient } from "@prisma/client";
-import { PrismaMessageRepository } from "../infra/message.prisma.repository";
-import { PrismaFolloweeRepository } from "../infra/followee.prisma.repository";
+import { PrismaMessageRepository } from "../infra/prisma/message.prisma.repository";
+import { PrismaFolloweeRepository } from "../infra/prisma/followee.prisma.repository";
 import { DefaultTimelinePresenter } from "./timeline.default.presenter";
 import { CLITimelinePresenter } from "./timeline.cli.presenter";
+import { RealDateProvider } from "../infra/real-date-provider";
 
 
 

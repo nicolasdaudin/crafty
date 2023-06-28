@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Followee } from "../followee/followee";
-import { FolloweeRepository } from "../followee/followee.repository";
+import { Followee, FolloweeRepository } from "../../application/followee.repository";
 
 export class PrismaFolloweeRepository implements FolloweeRepository {
   constructor(private readonly prisma: PrismaClient) { }

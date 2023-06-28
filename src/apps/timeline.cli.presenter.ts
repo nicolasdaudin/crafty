@@ -1,6 +1,6 @@
-import { Timeline } from "../messaging/domain/timeline";
+import { Timeline } from "../domain/timeline";
 import { DefaultTimelinePresenter } from "./timeline.default.presenter";
-import { TimelinePresenter } from "./timeline.presenter";
+import { TimelinePresenter } from "../application/timeline.presenter";
 
 export class CLITimelinePresenter implements TimelinePresenter {
   constructor(private readonly defaultTimelinePresenter: DefaultTimelinePresenter) { }

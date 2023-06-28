@@ -1,4 +1,4 @@
-import { FolloweeRepository } from "./followee.repository";
+import { FolloweeRepository } from "../followee.repository";
 
 
 export type FollowUserCommand = {

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { MessageRepository } from "../messaging/application/message.repository";
-import { Message } from "../messaging/domain/message";
+import { MessageRepository } from "../../application/message.repository";
+import { Message } from "../../domain/message";
 
 
 // in case of complex usecases, we could have a 'Message' (and User?) object representing the items en database, and some helper to do the mapping between Database objects and app objects, but here it's not complex

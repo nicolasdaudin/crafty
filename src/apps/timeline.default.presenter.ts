@@ -1,6 +1,6 @@
-import { DateProvider } from "../messaging/application/date-provider";
-import { Timeline } from "../messaging/domain/timeline";
-import { TimelinePresenter } from "./timeline.presenter";
+import { DateProvider } from "../application/date-provider";
+import { Timeline } from "../domain/timeline";
+import { TimelinePresenter } from "../application/timeline.presenter";
 
 export class DefaultTimelinePresenter implements TimelinePresenter {
   constructor(private readonly dateProvider: DateProvider) { }

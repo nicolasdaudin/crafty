@@ -1,4 +1,4 @@
-import { Timeline } from "../messaging/domain/timeline";
+import { Timeline } from "../domain/timeline";
 
 export interface TimelinePresenter {
   show(timeline: Timeline)

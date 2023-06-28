@@ -1,8 +1,8 @@
-import { TimelinePresenter } from "../apps/timeline.presenter";
-import { FolloweeRepository } from "../followee/followee.repository";
-import { DateProvider } from "../messaging/application/date-provider";
-import { MessageRepository } from "../messaging/application/message.repository";
-import { Timeline } from "../messaging/domain/timeline";
+import { TimelinePresenter } from "../timeline.presenter";
+import { FolloweeRepository } from "../followee.repository";
+import { DateProvider } from "../date-provider";
+import { MessageRepository } from "../message.repository";
+import { Timeline } from "../../domain/timeline";
 
 export class ViewWallUseCase {
 

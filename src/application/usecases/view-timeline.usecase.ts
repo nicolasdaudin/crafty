@@ -1,4 +1,4 @@
-import { TimelinePresenter } from "../../../apps/timeline.presenter";
+import { TimelinePresenter } from "../timeline.presenter";
 import { Timeline } from "../../domain/timeline";
 import { DateProvider } from "../date-provider";
 import { MessageRepository } from "../message.repository";

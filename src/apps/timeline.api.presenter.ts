@@ -1,6 +1,6 @@
 import { FastifyReply } from "fastify";
-import { Timeline } from "../messaging/domain/timeline";
-import { TimelinePresenter } from "./timeline.presenter";
+import { Timeline } from "../domain/timeline";
+import { TimelinePresenter } from "../application/timeline.presenter";
 
 export class ApiTimelinePresenter implements TimelinePresenter {
   constructor(private readonly reply: FastifyReply) { }

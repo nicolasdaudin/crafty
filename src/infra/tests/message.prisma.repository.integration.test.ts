@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { messageBuilder } from '../messaging/tests/message.builder';
-import { PrismaMessageRepository } from './message.prisma.repository';
-import { Message } from '../messaging/domain/message';
+import { messageBuilder } from '../../tests/message.builder';
+import { PrismaMessageRepository } from '../prisma/message.prisma.repository';
+import { Message } from '../../domain/message';
 
 const asyncExec = promisify(exec);
 

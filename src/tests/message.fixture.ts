@@ -1,4 +1,4 @@
-import { DefaultTimelinePresenter } from "../../apps/timeline.default.presenter";
+import { DefaultTimelinePresenter } from "../apps/timeline.default.presenter";
 import { EditMessageUseCase, EditMessageCommand } from "../application/usecases/edit-message.usecase";
 import { PostMessageUseCase, PostMessageCommand } from "../application/usecases/post-message.usecase";
 import { ViewTimelineUseCase } from "../application/usecases/view-timeline.usecase";
