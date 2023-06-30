@@ -24,9 +24,10 @@ class PostCommand extends CommandRunner {
       if (result.isOk()) {
         console.log('✅ Message posté');
         process.exit(0);
+      } else {
+        console.error('❌ Message non posté. Erreur:', result.error);
+        process.exit(1);
       }
-      console.error('❌ Message non posté. Erreur:', result.error);
-      process.exit(1);
     } catch (error) {
       console.log('❌ Message non posté. Erreur:', error);
       process.exit(1);
@@ -54,10 +55,13 @@ class EditCommand extends CommandRunner {
       if (result.isOk()) {
         console.log('✅ Message edité');
         process.exit(0);
+      } else {
+        console.log('❌ Message non edité. Erreur:', result.error);
+        process.exit(1);
       }
-      console.log('❌ Message non edité. Erreur:', result.error);
     } catch (error) {
       console.log('❌ Message non edité. Erreur:', error);
+      process.exit(1);
 
     }
   }
