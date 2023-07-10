@@ -45,10 +45,10 @@ export class ApiController {
   }
 
   @Post('/edit')
-  async editMessage(@Body() body: { messageId: string, message: string }, @Res() reply: FastifyReply) {
+  async editMessage(@Body() body: { id: string, message: string }, @Res() reply: FastifyReply) {
 
     const editMessageCommand: EditMessageCommand = {
-      id: body.messageId,
+      id: body.id,
       text: body.message
     };
 

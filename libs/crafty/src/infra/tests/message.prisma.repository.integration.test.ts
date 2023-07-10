@@ -5,6 +5,7 @@ import { promisify } from 'util';
 import { messageBuilder } from '../../tests/message.builder';
 import { PrismaMessageRepository } from '../prisma/message.prisma.repository';
 import { Message } from '../../domain/message';
+import { NotFoundError } from '@prisma/client/runtime';
 
 const asyncExec = promisify(exec);
 
@@ -220,6 +221,84 @@ describe("PrismaMessageRepository", () => {
       .authoredBy('Alice')
       .publishedAt(new Date('2023-06-27T08:30:00.000Z'))
       .build())
+
+  });
+
+  test("getById() throws an error if the id does not exist", async () => {
+    const messageRepository = new PrismaMessageRepository(prismaClient);
+
+    const startingMessages = [
+      messageBuilder()
+        .withId('test1')
+        .withText('hi')
+        .authoredBy('Alice')
+        .publishedAt(new Date('2023-06-27T08:30:00.000Z'))
+        .build(),
+      messageBuilder()
+        .withId('test2')
+        .withText('my name is Alice')
+        .authoredBy('Alice')
+        .publishedAt(new Date('2023-06-27T08:31:00.000Z'))
+        .build()
+    ]
+
+    await prismaClient.user.create({ data: { name: 'Alice' } })
+
+    for (const msg of startingMessages) {
+      const messageData = msg.data;
+      await prismaClient.message.create({
+        data: {
+          id: messageData.id,
+          authorId: messageData.author,
+          text: messageData.text,
+          publishedAt: messageData.publishedAt
+        }
+      })
+    }
+
+    expect.assertions(1);
+    try {
+      const aliceMessage = await messageRepository.getById('test3');
+    } catch (error) {
+      expect(error.name).toBe('NotFoundError')
+    }
+
+  });
+
+  test.only("getById() retrieves any message if the id is undefined", async () => {
+    const messageRepository = new PrismaMessageRepository(prismaClient);
+
+    const startingMessages = [
+      messageBuilder()
+        .withId('test1')
+        .withText('hi')
+        .authoredBy('Alice')
+        .publishedAt(new Date('2023-06-27T08:30:00.000Z'))
+        .build(),
+      messageBuilder()
+        .withId('test2')
+        .withText('my name is Alice')
+        .authoredBy('Alice')
+        .publishedAt(new Date('2023-06-27T08:31:00.000Z'))
+        .build()
+    ]
+
+    await prismaClient.user.create({ data: { name: 'Alice' } })
+
+    for (const msg of startingMessages) {
+      const messageData = msg.data;
+      await prismaClient.message.create({
+        data: {
+          id: messageData.id,
+          authorId: messageData.author,
+          text: messageData.text,
+          publishedAt: messageData.publishedAt
+        }
+      })
+    }
+
+    const aliceMessage = await messageRepository.getById(undefined);
+    expect(aliceMessage.id).toEqual('test1')
 
   });
 

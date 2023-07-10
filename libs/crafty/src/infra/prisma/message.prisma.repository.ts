@@ -41,7 +41,8 @@ export class PrismaMessageRepository implements MessageRepository {
 
   async getById(id: string): Promise<Message> {
     const messageData = await this.prisma.message.findFirstOrThrow({ where: { id } });
-
+    console.log({ id })
+    console.log({ messageData });
     return Message.fromData({
       id: messageData.id,
       author: messageData.authorId,
